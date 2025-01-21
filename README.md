@@ -103,7 +103,7 @@ The server requires the following environment variables:
 ### Common Issues
 
 1. MongoDB Connection:
-   - Ensure proper MongoDB connection, I used docker to run locally. MongoDB Atlas also works fine.
+   - I used docker to run locally. MongoDB Atlas also works fine.
    - Check connection string in `.env`
 
 2. Authentication Issues:
