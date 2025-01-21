@@ -4,8 +4,8 @@ const protect = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1]
 
     if (!token) {
-        return res.status(401).json({ 
-            message: "no token provided, authorization denied" 
+        return res.status(401).json({
+            message: "no token provided, authorization denied"
         })
     }
 
@@ -14,10 +14,10 @@ const protect = (req, res, next) => {
         req.user = decoded
         next()
     } catch (error) {
-        res.status(401).json({ 
-            message: "invalid token" 
+        res.status(401).json({
+            message: "invalid token"
         })
     }
-};
+}
 
 export default protect
