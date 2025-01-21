@@ -1,39 +1,16 @@
 import mongoose from "mongoose"
 import bcrypt from 'bcrypt'
+
 const userSchema = new mongoose.Schema(
     {
-        name: { 
-            type: String, 
-            required: true, 
-            trim: true 
-        },
-        email: { 
-            type: String, 
-            required: true,
-            unique: true, 
-            lowercase: true, 
-            trim: true 
-        },
-        password: { 
-            type: String, 
-            required: true 
-        },
-        bio: { 
-            type: String, 
-            maxLength: 500 
-        },
-        createdAt: { 
-            type: Date, 
-            default: Date.now 
-        },
-        updatedAt: { 
-            type: Date, 
-            default: Date.now 
-        }
+        name: { type: String, required: true, trim: true },
+        email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+        password: { type: String, required: true },
+        bio: { type: String, maxLength: 500 },
+        createdAt: { type: Date, default: Date.now },
+        updatedAt: { type: Date, default: Date.now }
     },
-    { 
-        timestamps: true 
-    }
+    { timestamps: true }
 )
 
 userSchema.pre('save', async function (next) {

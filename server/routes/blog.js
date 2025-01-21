@@ -1,5 +1,6 @@
 import express from "express"
 import Blog from "../db/blog.js"
+import protect from "../authMiddleware.js" 
 import { z } from "zod"
 
 const router = express.Router()
@@ -7,21 +8,26 @@ const router = express.Router()
 const blogSchema = z.object({
     title: z.string().min(1, "title is required"),
     content: z.string().min(1, "content is required"),
-    author: z.string().min(1, "author ID is required"),
     published: z.boolean().optional()
 })
 
-router.post('/', async (req, res) => {
-    const { title, content, author, published } = req.body
+router.post('/', protect, async (req, res) => {
+    const { title, content, published } = req.body
 
     try {
-        blogSchema.parse({ title, content, author, published })
+        blogSchema.parse({ title, content, published })
 
-        const newBlog = new Blog({ title, content, author, published })
+        const newBlog = new Blog({ 
+            title, 
+            content, 
+            author: req.user.id,  
+            published 
+        })
+
         await newBlog.save()
 
         res.status(201).json({
-            message: "blog created successfully!",
+            message: "blog created successfully",
             blog: newBlog
         })
     } catch (error) {
@@ -31,6 +37,7 @@ router.post('/', async (req, res) => {
         })
     }
 })
+
 
 router.get('/', async (req, res) => {
     try {
@@ -43,6 +50,7 @@ router.get('/', async (req, res) => {
         })
     }
 })
+
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params
@@ -65,7 +73,8 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.put('/:id', async (req, res) => {
+
+router.put('/:id', protect, async (req, res) => {
     const { id } = req.params
     const { title, content, published } = req.body
 
@@ -78,7 +87,13 @@ router.put('/:id', async (req, res) => {
             })
         }
 
-        blogSchema.parse({ title, content, author: blog.author, published })
+        if (blog.author.toString() !== req.user.id) {
+            return res.status(403).json({
+                message: "unauthorized action, you are not the author"
+            })
+        }
+
+        blogSchema.parse({ title, content, published })
 
         blog.title = title || blog.title
         blog.content = content || blog.content
@@ -87,18 +102,19 @@ router.put('/:id', async (req, res) => {
         await blog.save()
 
         res.json({
-            message: "blog updated successfully!",
+            message: "blog updated successfully",
             blog
         })
     } catch (error) {
         res.status(400).json({
-            message: error.errors ? error.errors[0].message : "error updating blog.",
+            message: error.errors ? error.errors[0].message : "error updating blog",
             error: error.message
         })
     }
 })
 
-router.delete('/:id', async (req, res) => {
+
+router.delete('/:id', protect, async (req, res) => {
     const { id } = req.params
 
     try {
@@ -110,14 +126,20 @@ router.delete('/:id', async (req, res) => {
             })
         }
 
+        if (blog.author.toString() !== req.user.id) {
+            return res.status(403).json({
+                message: "unauthorized action, you are not the author"
+            })
+        }
+
         await Blog.deleteOne({ _id: id })
 
         res.json({
-            message: "blog deleted successfully!"
+            message: "blog deleted successfully"
         })
     } catch (error) {
         res.status(500).json({
-            message: "error deleting blog.",
+            message: "error deleting blog",
             error: error.message
         })
     }

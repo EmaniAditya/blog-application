@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import connectDB from "./db/db.js"
 import userRoute from "./routes/user.js"
 import blogRoute from "./routes/blog.js"
+import commentRoute from "./routes/comment.js"
 
 dotenv.config({ path: './.env' })
 
@@ -20,17 +21,17 @@ connectDB()
 
 app.get("/health", (req, res) => {
     console.log("status - ok")
-    res.status(200).send("OK")
+    res.status(200).send("ok")
 })
 
 app.use('/user', userRoute)
 app.use('/blog', blogRoute)
-
+app.use('/comment', commentRoute)
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
     res.status(500).json({
-        message: "Something went wrong!",
+        message: "something went wrong",
         error: process.env.NODE_ENV === 'development' ? err.message : undefined
     })
 })

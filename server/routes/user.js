@@ -33,21 +33,21 @@ router.post('/signup', async (req, res) => {
         const userExists = await User.findOne({ email })
         if (userExists) {
             return res.status(400).json({
-                message: "user already exists.",
+                message: "user already exists",
             })
         }
 
         const user = new User({ name, email, password, bio }) 
         await user.save()
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h'})
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' })
         res.status(201).json({
-            message: "user created successfully!",
+            message: "user created successfully",
             token,
         })
     } catch (error) {
         res.status(400).json({
-            message: error.message || "error creating user.",
+            message: error.message || "error creating user",
             error: error.message,
         })
     }
@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
         )
         
         res.json({
-            message: "login successful!",
+            message: "login successful",
             token,
         })
     } catch (error) {
@@ -89,7 +89,6 @@ router.post('/login', async (req, res) => {
     }
 })
 
-
 router.put('/:id', protect, async (req, res) => {
     const { id } = req.params
     const { name, email, password, bio } = req.body
@@ -97,7 +96,7 @@ router.put('/:id', protect, async (req, res) => {
     try {
         if (req.user.id !== id) {
             return res.status(403).json({
-                message: "Unauthorized action",
+                message: "unauthorized action",
             })
         }
 
@@ -155,7 +154,7 @@ router.delete('/:id', protect, async (req, res) => {
     try {
         if (req.user.id !== id) {
             return res.status(403).json({
-                message: "Unauthorized action",
+                message: "unauthorized action",
             })
         }
 
