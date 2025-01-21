@@ -1,14 +1,12 @@
 {
   "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "hono": "^4.6.17"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250109.0",
-    "wrangler": "^3.101.0"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
