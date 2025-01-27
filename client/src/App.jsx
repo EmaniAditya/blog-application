@@ -1,48 +1,45 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { useState } from 'react'
-import Navbar from './components/NavBar'
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
-import CreatePost from './pages/CreatePost'
-import BlogPost from './pages/BlogPost'
-import Profile from './pages/Profile'
-import PrivateRoute from './components/PrivateRoute'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { Login } from './components/auth/Login';
+import { Signup } from './components/auth/Signup';
+import { BlogList } from './components/blog/BlogList';
+import { BlogDetail } from './components/blog/BlogDetail';
+import { BlogForm } from './components/blog/BlogForm';
+import { Navbar } from './components/layout/Navbar';
+import { PrivateRoute } from './components/auth/PrivateRoute';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
-        <main className="container mx-auto px-4 py-8">
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-gray-50">
+          <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/blog/:id" element={<BlogPost />} />
-            <Route
-              path="/create"
+            <Route path="/" element={<BlogList />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/blog/:id" element={<BlogDetail />} />
+            <Route 
+              path="/create-blog" 
               element={
-                <PrivateRoute isAuthenticated={isAuthenticated}>
-                  <CreatePost />
+                <PrivateRoute>
+                  <BlogForm />
                 </PrivateRoute>
-              }
+              } 
             />
-            <Route
-              path="/profile"
+            <Route 
+              path="/blog/edit/:id" 
               element={
-                <PrivateRoute isAuthenticated={isAuthenticated}>
-                  <Profile />
+                <PrivateRoute>
+                  <BlogForm isEditing />
                 </PrivateRoute>
-              }
+              } 
             />
           </Routes>
-        </main>
-      </div>
-    </Router>
-  )
+        </div>
+      </Router>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

@@ -8,7 +8,7 @@ import { z } from "zod"
 const router = express.Router()
 
 const signupSchema = z.object({
-    name: z.string().min(1, "name is required"),
+    username: z.string().min(1, "username is required"),
     email: z.string().email("invalid email address").min(1, "email is required"),
     password: z.string().min(6, "password must be at least 6 characters"),
     bio: z.string().max(500, "bio is too long").optional()
@@ -20,10 +20,10 @@ const loginSchema = z.object({
 })
 
 router.post('/signup', async (req, res) => {
-    const { name, email, password, bio } = req.body
+    const { username, email, password, bio } = req.body
 
     try {
-        const result = signupSchema.safeParse({ name, email, password, bio })
+        const result = signupSchema.safeParse({ username, email, password, bio })
         if (!result.success) {
             return res.status(400).json({
                 message: result.error.errors[0].message,
@@ -37,7 +37,7 @@ router.post('/signup', async (req, res) => {
             })
         }
 
-        const user = new User({ name, email, password, bio }) 
+        const user = new User({ username, email, password, bio }) 
         await user.save()
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' })
@@ -89,94 +89,94 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.put('/:id', protect, async (req, res) => {
-    const { id } = req.params
-    const { name, email, password, bio } = req.body
+// router.put('/:id', protect, async (req, res) => {
+//     const { id } = req.params
+//     const { username, email, password, bio } = req.body
 
-    try {
-        if (req.user.id !== id) {
-            return res.status(403).json({
-                message: "unauthorized action",
-            })
-        }
+//     try {
+//         if (req.user.id !== id) {
+//             return res.status(403).json({
+//                 message: "unauthorized action",
+//             })
+//         }
 
-        const user = await User.findById(id)
+//         const user = await User.findById(id)
 
-        if (!user) {
-            return res.status(404).json({
-                message: "user not found",
-            })
-        }
+//         if (!user) {
+//             return res.status(404).json({
+//                 message: "user not found",
+//             })
+//         }
 
-        if (name) user.name = name
-        if (email) user.email = email
-        if (bio !== undefined) user.bio = bio
-        if (password) user.password = await bcrypt.hash(password, 10)
+//         if (username) user.username = username
+//         if (email) user.email = email
+//         if (bio !== undefined) user.bio = bio
+//         if (password) user.password = await bcrypt.hash(password, 10)
 
-        await user.save()
+//         await user.save()
 
-        res.json({
-            message: "user profile updated successfully",
-            user,
-        })
-    } catch (error) {
-        res.status(500).json({
-            message: "error updating user profile",
-            error: error.message,
-        })
-    }
-})
+//         res.json({
+//             message: "user profile updated successfully",
+//             user,
+//         })
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "error updating user profile",
+//             error: error.message,
+//         })
+//     }
+// })
 
-router.get('/:id', protect, async (req, res) => {
-    const { id } = req.params
+// router.get('/:id', protect, async (req, res) => {
+//     const { id } = req.params
 
-    try {
-        const user = await User.findById(id).select("-password")
+//     try {
+//         const user = await User.findById(id).select("-password")
 
-        if (!user) {
-            return res.status(404).json({
-                message: "user not found",
-            })
-        }
+//         if (!user) {
+//             return res.status(404).json({
+//                 message: "user not found",
+//             })
+//         }
 
-        res.json({ user })
-    } catch (error) {
-        res.status(500).json({
-            message: "error fetching user profile",
-            error: error.message,
-        })
-    }
-})
+//         res.json({ user })
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "error fetching user profile",
+//             error: error.message,
+//         })
+//     }
+// })
 
-router.delete('/:id', protect, async (req, res) => {
-    const { id } = req.params
+// router.delete('/:id', protect, async (req, res) => {
+//     const { id } = req.params
 
-    try {
-        if (req.user.id !== id) {
-            return res.status(403).json({
-                message: "unauthorized action",
-            })
-        }
+//     try {
+//         if (req.user.id !== id) {
+//             return res.status(403).json({
+//                 message: "unauthorized action",
+//             })
+//         }
 
-        const user = await User.findById(id)
+//         const user = await User.findById(id)
 
-        if (!user) {
-            return res.status(404).json({
-                message: "user not found",
-            })
-        }
+//         if (!user) {
+//             return res.status(404).json({
+//                 message: "user not found",
+//             })
+//         }
 
-        await User.deleteOne({ _id: id })
+//         await User.deleteOne({ _id: id })
 
-        res.json({
-            message: "user profile deleted successfully",
-        })
-    } catch (error) {
-        res.status(500).json({
-            message: "error deleting user profile",
-            error: error.message,
-        })
-    }
-})
+//         res.json({
+//             message: "user profile deleted successfully",
+//         })
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "error deleting user profile",
+//             error: error.message,
+//         })
+//     }
+// })
 
 export default router
