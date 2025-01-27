@@ -1,12 +1,12 @@
 # Blog Application
 
-A full-stack blog application built with the MERN stack (MongoDB, Express.js, React.js, Node.js), featuring user authentication, post management, and commenting system.
+A full-stack blog application built with the MERN stack (MongoDB, Express.js, React.js, Node.js), with user authentication, post management, and commenting system.
 
 ## Prerequisites
 
 Before you begin, ensure you have installed:
 - Node.js
-- MongoDB (running locally though docker or have a MongoDB Atlas account)
+- MongoDB (running locally through docker or have a MongoDB Atlas account)
 - npm package manager
 
 ## Project Structure
@@ -82,7 +82,7 @@ blog-application/
 
 ### Frontend (yet to be built)
 
-- **Modern UI with Tailwind CSS**
+- **UI with Tailwind CSS**
   - Responsive design
   - Clean and intuitive interface
 
@@ -114,7 +114,7 @@ The server requires the following environment variables:
 
 1. The `.env` file contains sensitive information and is included in `.gitignore`
 2. JWT tokens are used for secure authentication
-3. CORS is configured to accept requests only from the specified CLIENT_URL
+3. CORS is set to accept requests only from the specified CLIENT_URL
 
 ## Contributing
 
