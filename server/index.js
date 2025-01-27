@@ -4,7 +4,6 @@ import dotenv from "dotenv"
 import connectDB from "./db/db.js"
 import userRoute from "./routes/user.js"
 import blogRoute from "./routes/blog.js"
-import commentRoute from "./routes/comment.js"
 
 dotenv.config({ path: './.env' })
 
@@ -26,7 +25,6 @@ app.get("/health", (req, res) => {
 
 app.use('/user', userRoute)
 app.use('/blog', blogRoute)
-app.use('/comment', commentRoute)
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
