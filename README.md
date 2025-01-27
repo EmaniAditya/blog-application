@@ -77,7 +77,6 @@ blog-application/
 
 - **Blog Post Management**
   - Create, read, update, and delete posts
-  - Comment functionality
   - User-specific post management
 
 ### Frontend (yet to be built)
