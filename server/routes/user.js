@@ -20,38 +20,44 @@ const loginSchema = z.object({
 })
 
 router.post('/signup', async (req, res) => {
-    const { username, email, password, bio } = req.body
+    const { username, email, password, bio } = req.body;
 
     try {
-        const result = signupSchema.safeParse({ username, email, password, bio })
+        const result = signupSchema.safeParse({ username, email, password, bio });
         if (!result.success) {
             return res.status(400).json({
                 message: result.error.errors[0].message,
-            })
+            });
         }
 
-        const userExists = await User.findOne({ email })
+        if (/\s/.test(username)) {
+            return res.status(400).json({
+                message: "Username cannot contain spaces",
+            });
+        }
+
+        const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
                 message: "user already exists",
-            })
+            });
         }
 
-        const user = new User({ username, email, password, bio }) 
-        await user.save()
+        const user = new User({ username, email, password, bio });
+        await user.save();
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' })
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
         res.status(201).json({
             message: "user created successfully",
             token,
-        })
+        });
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             message: error.message || "error creating user",
             error: error.message,
-        })
+        });
     }
-})
+});
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body
@@ -80,7 +86,10 @@ router.post('/login', async (req, res) => {
         res.json({
             message: "login successful",
             token,
+            userId: user._id,
+            username: user.username
         })
+        
     } catch (error) {
         res.status(400).json({
             message: "error logging in",
@@ -89,94 +98,100 @@ router.post('/login', async (req, res) => {
     }
 })
 
-// router.put('/:id', protect, async (req, res) => {
-//     const { id } = req.params
-//     const { username, email, password, bio } = req.body
+router.get('/:id', async (req, res) => {
+    const { id } = req.params
 
-//     try {
-//         if (req.user.id !== id) {
-//             return res.status(403).json({
-//                 message: "unauthorized action",
-//             })
-//         }
+    try {
+        const user = await User.findById(id).select("-password")
 
-//         const user = await User.findById(id)
+        if (!user) {
+            return res.status(404).json({
+                message: "user not found",
+            })
+        }
 
-//         if (!user) {
-//             return res.status(404).json({
-//                 message: "user not found",
-//             })
-//         }
+        res.json({ user })
+    } catch (error) {
+        res.status(500).json({
+            message: "error fetching user profile",
+            error: error.message,
+        })
+    }
+})
 
-//         if (username) user.username = username
-//         if (email) user.email = email
-//         if (bio !== undefined) user.bio = bio
-//         if (password) user.password = await bcrypt.hash(password, 10)
+router.put('/:id', protect, async (req, res) => {
+    const { id } = req.params
+    const { username, email, password, bio } = req.body
 
-//         await user.save()
+    try {
+        if (req.user.id !== id) {
+            return res.status(403).json({
+                message: "unauthorized action",
+            })
+        }
 
-//         res.json({
-//             message: "user profile updated successfully",
-//             user,
-//         })
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "error updating user profile",
-//             error: error.message,
-//         })
-//     }
-// })
+        const user = await User.findById(id)
 
-// router.get('/:id', protect, async (req, res) => {
-//     const { id } = req.params
+        if (!user) {
+            return res.status(404).json({
+                message: "user not found",
+            })
+        }
 
-//     try {
-//         const user = await User.findById(id).select("-password")
 
-//         if (!user) {
-//             return res.status(404).json({
-//                 message: "user not found",
-//             })
-//         }
+        if (username && /\s/.test(username)) {
+            return res.status(400).json({
+                message: "Username cannot contain spaces",
+            });
+        }
 
-//         res.json({ user })
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "error fetching user profile",
-//             error: error.message,
-//         })
-//     }
-// })
+        if (username) user.username = username
+        if (email) user.email = email
+        if (bio !== undefined) user.bio = bio
+        if (password) user.password = await bcrypt.hash(password, 10)
 
-// router.delete('/:id', protect, async (req, res) => {
-//     const { id } = req.params
+        await user.save()
 
-//     try {
-//         if (req.user.id !== id) {
-//             return res.status(403).json({
-//                 message: "unauthorized action",
-//             })
-//         }
+        res.json({
+            message: "user profile updated successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "error updating user profile",
+            error: error.message,
+        })
+    }
+})
 
-//         const user = await User.findById(id)
+router.delete('/:id', protect, async (req, res) => {
+    const { id } = req.params
 
-//         if (!user) {
-//             return res.status(404).json({
-//                 message: "user not found",
-//             })
-//         }
+    try {
+        if (req.user.id !== id) {
+            return res.status(403).json({
+                message: "unauthorized action",
+            })
+        }
 
-//         await User.deleteOne({ _id: id })
+        const user = await User.findById(id)
 
-//         res.json({
-//             message: "user profile deleted successfully",
-//         })
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "error deleting user profile",
-//             error: error.message,
-//         })
-//     }
-// })
+        if (!user) {
+            return res.status(404).json({
+                message: "user not found",
+            })
+        }
+
+        await User.deleteOne({ _id: id })
+
+        res.json({
+            message: "user profile deleted successfully",
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "error deleting user profile",
+            error: error.message,
+        })
+    }
+})
 
 export default router

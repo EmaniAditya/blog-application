@@ -6,8 +6,8 @@ A full-stack blog application built with the MERN stack (MongoDB, Express.js, Re
 
 Before you begin, ensure you have installed:
 - Node.js
-- MongoDB (running locally through docker or have a MongoDB Atlas account)
-- npm package manager
+- MongoDB
+- npm (package manager)
 
 ## Project Structure
 
@@ -38,7 +38,7 @@ blog-application/
 
 3. Create a `.env` file based on `.env.example`:
    ```
-   ATLAS_URI=mongodb://localhost:27017
+   ATLAS_URI=mongodb://localhost:27017/blog-application
    PORT=5050
    JWT_SECRET=your-secret
    CLIENT_URL=https://frontend-url.here.com

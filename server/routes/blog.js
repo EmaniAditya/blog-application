@@ -41,7 +41,7 @@ router.post('/', protect, async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const blogs = await Blog.find()
+        const blogs = await Blog.find({ published: true })
         res.json({ blogs })
     } catch (error) {
         res.status(500).json({
