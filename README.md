@@ -68,7 +68,7 @@ blog-application/
 
 ## Main Features
 
-### Backend (completed)
+### Backend 
 
 - **User Authentication**
   - JWT-based authentication
@@ -79,7 +79,7 @@ blog-application/
   - Create, read, update, and delete posts
   - User-specific post management
 
-### Frontend (yet to be built)
+### Frontend
 
 - **UI with Tailwind CSS**
   - Responsive design
@@ -122,8 +122,6 @@ The server requires the following environment variables:
 3. Commit your changes
 4. Push to the branch
 5. Create a Pull Request
-
-### PS: Still wrapping up a basic UI.
 
 
 
