@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { blogApi } from '../../utils/api'; // Import blogApi
+import { blogApi } from '../../utils/api'; 
 import { BlogCard } from './BlogCard';
 import { BlogCardSkeleton, Loading } from '../layout/Loading';
 
@@ -12,7 +12,7 @@ export function BlogList() {
     const fetchBlogs = async () => {
       try {
         const response = await blogApi.getAll();
-        // console.log('API Response:', response); 
+        // console.log(response); 
         if (response.data && Array.isArray(response.data.blogs)) {
           setBlogs(response.data.blogs); 
         } else {

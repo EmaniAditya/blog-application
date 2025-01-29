@@ -9,7 +9,6 @@ export function Login() {
   const navigate = useNavigate();
   const { authState } = useAuth();
 
-  // If already logged in, redirect to home page
   if (authState.isAuthenticated) {
     navigate('/');
   }

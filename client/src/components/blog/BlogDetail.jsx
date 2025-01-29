@@ -13,7 +13,7 @@ export function BlogDetail() {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await blogApi.getOne(id); // Using blogApi instead of axios directly
+        const response = await blogApi.getOne(id);
         setBlog(response.data.blog);
       } catch (err) {
         setError('Failed to fetch blog');

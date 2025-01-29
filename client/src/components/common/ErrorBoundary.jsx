@@ -1,31 +1,3 @@
-import { ErrorBoundary } from './components/ErrorBoundary';
-
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <ErrorBoundary>
-          <div className="min-h-screen bg-gray-50">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<BlogList />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/blog/:id" element={<BlogDetail />} />
-              <Route path="/create-blog" element={<PrivateRoute><BlogForm /></PrivateRoute>} />
-              <Route path="/blog/edit/:id" element={<PrivateRoute><BlogForm isEditing /></PrivateRoute>} />
-            </Routes>
-          </div>
-        </ErrorBoundary>
-      </Router>
-    </AuthProvider>
-  );
-}
-
-
-
-// // Inside ErrorBoundary.jsx
-
 // class ErrorBoundary extends React.Component {
 //   state = { hasError: false, errorMessage: '' };
 

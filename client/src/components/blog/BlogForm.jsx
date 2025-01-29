@@ -11,10 +11,9 @@ export function BlogForm({ blog, isEditing }) {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { id } = useParams(); // For fetching the blog when editing
+  const { id } = useParams(); 
   const token = localStorage.getItem('token');
 
-  // Fetch the blog if editing
   useEffect(() => {
     if (isEditing && id) {
       const fetchBlog = async () => {

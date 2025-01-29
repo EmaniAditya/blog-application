@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       setAuthState({
         token,
         isAuthenticated: true,
-        user: JSON.parse(atob(token.split('.')[1])), // Decoding token to get user data
+        user: JSON.parse(atob(token.split('.')[1])), 
       });
     } else {
       setAuthState({
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     setAuthState({
       token,
       isAuthenticated: true,
-      user: JSON.parse(atob(token.split('.')[1])), // Decode token to get user info
+      user: JSON.parse(atob(token.split('.')[1])), 
     });
   };
 
