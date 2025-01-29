@@ -1,20 +1,26 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+import { authApi } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 
 export function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { authState } = useAuth();
+
+  // If already logged in, redirect to home page
+  if (authState.isAuthenticated) {
+    navigate('/');
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${SERVER_URL}/user/login`, formData);
+      const response = await authApi.login(formData)
       localStorage.setItem('token', response.data.token);
       navigate('/');
+      window.location.reload();
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }

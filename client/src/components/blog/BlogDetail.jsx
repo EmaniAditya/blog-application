@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL
+import { blogApi } from '../../utils/api';
 
 export function BlogDetail() {
   const [blog, setBlog] = useState(null);
@@ -15,7 +13,7 @@ export function BlogDetail() {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await axios.get(`${SERVER_URL}/blog/${id}`);
+        const response = await blogApi.getOne(id); // Using blogApi instead of axios directly
         setBlog(response.data.blog);
       } catch (err) {
         setError('Failed to fetch blog');
@@ -27,13 +25,16 @@ export function BlogDetail() {
   }, [id]);
 
   const handleDelete = async () => {
-    try {
-      await axios.delete(`${SERVER_URL}/blog/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      navigate('/');
-    } catch (err) {
-      setError('Failed to delete blog');
+    const isConfirmed = window.confirm('Are you sure you want to delete this blog?');
+    if (isConfirmed) {
+      try {
+        await blogApi.delete(id, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        navigate('/');
+      } catch (err) {
+        setError('Failed to delete blog');
+      }
     }
   };
 

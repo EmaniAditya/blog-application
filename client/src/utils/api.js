@@ -9,6 +9,19 @@ const api = axios.create({
   }
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token'); // Get token from localStorage
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`; // Add token to the headers
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {

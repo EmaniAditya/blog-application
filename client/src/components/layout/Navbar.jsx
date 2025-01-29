@@ -5,7 +5,7 @@ export function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    window.location.reload();
+    window.location.href = '/'; // Fixed typo here from "hrerf" to "href"
   };
 
   return (

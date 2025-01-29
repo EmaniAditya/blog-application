@@ -1,60 +1,55 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { parseJwt } from '../utils/auth';
-import { authApi } from '../utils/api';
+import { createContext, useState, useContext, useEffect } from 'react';
+import { getToken, setToken, removeToken, isTokenExpired } from '../utils/auth';
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
+
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const verifyToken = async (token) => {
-    try {
-      const decoded = parseJwt(token);
-      if (!decoded || decoded.exp * 1000 < Date.now()) {
-        throw new Error('Token expired');
-      }
-      return decoded;
-    } catch (error) {
-      localStorage.removeItem('token');
-      return null;
-    }
-  };
+  const [authState, setAuthState] = useState({
+    token: getToken(),
+    isAuthenticated: false,
+    user: null,
+  });
 
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const userData = await verifyToken(token);
-        setUser(userData);
-      }
-      setLoading(false);
-    };
-    initAuth();
+    const token = getToken();
+    if (token && !isTokenExpired(token)) {
+      setAuthState({
+        token,
+        isAuthenticated: true,
+        user: JSON.parse(atob(token.split('.')[1])), // Decoding token to get user data
+      });
+    } else {
+      setAuthState({
+        token: null,
+        isAuthenticated: false,
+        user: null,
+      });
+    }
   }, []);
 
-  const login = async (token) => {
-    localStorage.setItem('token', token);
-    const userData = await verifyToken(token);
-    setUser(userData);
+  const login = (token) => {
+    setToken(token);
+    setAuthState({
+      token,
+      isAuthenticated: true,
+      user: JSON.parse(atob(token.split('.')[1])), // Decode token to get user info
+    });
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
+    removeToken();
+    setAuthState({
+      token: null,
+      isAuthenticated: false,
+      user: null,
+    });
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, isAuthenticated: !!user }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ authState, login, logout }}>
+      {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { authApi } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL; 
 
 export function Signup() {
   const [formData, setFormData] = useState({
@@ -13,15 +13,21 @@ export function Signup() {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { authState } = useAuth();
+
+  // If already logged in, redirect to home page
+  if (authState.isAuthenticated) {
+    navigate('/');
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${SERVER_URL}/user/signup`, formData);
+      const response = await authApi.signup(formData)
       localStorage.setItem('token', response.data.token);
-      navigate('/');
+      navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(err.response?.data?.message || 'Signup failed');
     }
   };
 

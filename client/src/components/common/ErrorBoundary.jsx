@@ -1,37 +1,55 @@
-import { Component } from 'react';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
-export class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center p-8">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h2>
-            <p className="text-gray-600 mb-4">Please try refreshing the page</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Refresh Page
-            </button>
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <ErrorBoundary>
+          <div className="min-h-screen bg-gray-50">
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<BlogList />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/blog/:id" element={<BlogDetail />} />
+              <Route path="/create-blog" element={<PrivateRoute><BlogForm /></PrivateRoute>} />
+              <Route path="/blog/edit/:id" element={<PrivateRoute><BlogForm isEditing /></PrivateRoute>} />
+            </Routes>
           </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
+        </ErrorBoundary>
+      </Router>
+    </AuthProvider>
+  );
 }
+
+
+
+// // Inside ErrorBoundary.jsx
+
+// class ErrorBoundary extends React.Component {
+//   state = { hasError: false, errorMessage: '' };
+
+//   static getDerivedStateFromError(error) {
+//     return { hasError: true, errorMessage: error.message };
+//   }
+
+//   componentDidCatch(error, info) {
+//     console.error('Error caught by ErrorBoundary:', error, info);
+//   }
+
+//   render() {
+//     if (this.state.hasError) {
+//       return (
+//         <div className="text-center text-red-500">
+//           <h2>Something went wrong.</h2>
+//           <p>{this.state.errorMessage}</p>
+//           <p>Please try again later.</p>
+//         </div>
+//       );
+//     }
+
+//     return this.props.children;
+//   }
+// }
+
+// export { ErrorBoundary };

@@ -1,44 +1,52 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { blogApi } from '../../utils/api';
 
 export function BlogForm({ blog, isEditing }) {
-
   const [loading, setLoading] = useState(false);
-
-
   const [formData, setFormData] = useState({
     title: blog?.title || '',
     content: blog?.content || '',
-    published: blog?.published || false
+    published: blog?.published || false,
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { id } = useParams(); // For fetching the blog when editing
   const token = localStorage.getItem('token');
+
+  // Fetch the blog if editing
+  useEffect(() => {
+    if (isEditing && id) {
+      const fetchBlog = async () => {
+        try {
+          const response = await blogApi.getOne(id);
+          setFormData({
+            title: response.data.title,
+            content: response.data.content,
+            published: response.data.published,
+          });
+        } catch (err) {
+          setError('Failed to load the blog for editing');
+        }
+      };
+      fetchBlog();
+    }
+  }, [isEditing, id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const url = isEditing 
-        ? `${SERVER_URL}/blog/${blog._id}`
-        : `${SERVER_URL}/blog`;
-      
-      const method = isEditing ? 'put' : 'post';
-      
-      await axios[method](url, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
+      const method = isEditing ? 'update' : 'create';
+      const url = isEditing ? `/blog/${id}` : '/blog';
+
+      const response = isEditing
+        ? await blogApi.update(id, formData)
+        : await blogApi.create(formData);
+
       navigate('/');
     } catch (err) {
-      setError(
-        err.response?.data?.message || 
-        err.message ||
-        'Failed to save blog'
-      );
+      setError(err.response?.data?.message || err.message || 'Failed to save blog');
     } finally {
       setLoading(false);
     }
