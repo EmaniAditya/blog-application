@@ -13,9 +13,20 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-xl font-bold">
+            <Link to="/" className="text-xl font-bold mr-1">
               Blog App
             </Link>
+            <span className="text-sm text-gray-600 mt-1">
+              by{' '}
+              <a
+                href="https://emaniaditya.github.io"
+                className="text-blue-600 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Aditya
+              </a>
+            </span>
           </div>
           <div className="flex items-center space-x-4">
             {token ? (
