@@ -16,7 +16,7 @@ export function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await authApi.login(formData)
+      const response = await authApi.login(formData);
       localStorage.setItem('token', response.data.token);
       navigate('/');
       window.location.reload();
@@ -36,7 +36,9 @@ export function Login() {
               type="email"
               placeholder="Email"
               className="w-full px-3 py-2 border rounded-md"
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
             />
           </div>
           <div>
@@ -44,7 +46,9 @@ export function Login() {
               type="password"
               placeholder="Password"
               className="w-full px-3 py-2 border rounded-md"
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
           </div>
           <button

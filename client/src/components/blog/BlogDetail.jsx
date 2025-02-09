@@ -25,11 +25,13 @@ export function BlogDetail() {
   }, [id]);
 
   const handleDelete = async () => {
-    const isConfirmed = window.confirm('Are you sure you want to delete this blog?');
+    const isConfirmed = window.confirm(
+      'Are you sure you want to delete this blog?'
+    );
     if (isConfirmed) {
       try {
         await blogApi.delete(id, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         navigate('/');
       } catch (err) {

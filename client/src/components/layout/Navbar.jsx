@@ -5,7 +5,7 @@ export function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    window.location.href = '/'; 
+    window.location.href = '/';
   };
 
   return (

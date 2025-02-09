@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { authApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
-
 export function Signup() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    bio: ''
+    bio: '',
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ export function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await authApi.signup(formData)
+      const response = await authApi.signup(formData);
       localStorage.setItem('token', response.data.token);
       navigate('/login');
     } catch (err) {
@@ -41,7 +40,9 @@ export function Signup() {
               type="text"
               placeholder="Username"
               className="w-full px-3 py-2 border rounded-md"
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
             />
           </div>
           <div>
@@ -49,7 +50,9 @@ export function Signup() {
               type="email"
               placeholder="Email"
               className="w-full px-3 py-2 border rounded-md"
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
             />
           </div>
           <div>
@@ -57,14 +60,18 @@ export function Signup() {
               type="password"
               placeholder="Password"
               className="w-full px-3 py-2 border rounded-md"
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
           </div>
           <div>
             <textarea
               placeholder="Bio (optional)"
               className="w-full px-3 py-2 border rounded-md"
-              onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, bio: e.target.value })
+              }
             />
           </div>
           <button

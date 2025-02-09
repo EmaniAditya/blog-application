@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       setAuthState({
         token,
         isAuthenticated: true,
-        user: JSON.parse(atob(token.split('.')[1])), 
+        user: JSON.parse(atob(token.split('.')[1])),
       });
     } else {
       setAuthState({
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     setAuthState({
       token,
       isAuthenticated: true,
-      user: JSON.parse(atob(token.split('.')[1])), 
+      user: JSON.parse(atob(token.split('.')[1])),
     });
   };
 

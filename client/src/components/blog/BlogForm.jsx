@@ -11,7 +11,7 @@ export function BlogForm({ blog, isEditing }) {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { id } = useParams(); 
+  const { id } = useParams();
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -45,7 +45,9 @@ export function BlogForm({ blog, isEditing }) {
 
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Failed to save blog');
+      setError(
+        err.response?.data?.message || err.message || 'Failed to save blog'
+      );
     } finally {
       setLoading(false);
     }
@@ -63,7 +65,9 @@ export function BlogForm({ blog, isEditing }) {
           <input
             type="text"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
             className="w-full px-3 py-2 border rounded-md"
             required
           />
@@ -72,7 +76,9 @@ export function BlogForm({ blog, isEditing }) {
           <label className="block text-sm font-medium mb-1">Content</label>
           <textarea
             value={formData.content}
-            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, content: e.target.value })
+            }
             className="w-full px-3 py-2 border rounded-md h-48"
             required
           />
@@ -81,7 +87,9 @@ export function BlogForm({ blog, isEditing }) {
           <input
             type="checkbox"
             checked={formData.published}
-            onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+            onChange={(e) =>
+              setFormData({ ...formData, published: e.target.checked })
+            }
             className="mr-2"
           />
           <label className="text-sm font-medium">Publish immediately</label>
@@ -90,7 +98,7 @@ export function BlogForm({ blog, isEditing }) {
           type="submit"
           className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
-          {loading ? 'Saving...' : (isEditing ? 'Update' : 'Create')} Blog
+          {loading ? 'Saving...' : isEditing ? 'Update' : 'Create'} Blog
         </button>
       </form>
     </div>
