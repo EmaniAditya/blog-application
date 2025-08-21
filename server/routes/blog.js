@@ -50,6 +50,22 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/my-blogs', protect, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const blogs = await Blog.find({ author: userId }).sort({ createdAt: -1 });
+    res.status(200).json({
+      message: 'Fetched user blogs successfully',
+      blogs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error fetching user blogs',
+      error: error.message,
+    });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
